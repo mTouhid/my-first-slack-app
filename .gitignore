@@ -35,3 +35,5 @@
 /config/master.key
 
 /config/local_env.yml
+
+/.byebug_history
