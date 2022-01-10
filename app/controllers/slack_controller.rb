@@ -1,5 +1,5 @@
 class SlackController < ApplicationController
   def events
-    @test = params.require(:slack).permit(:body)
+    @test = params.require(:slack).permit(:challenge)
   end
 end
