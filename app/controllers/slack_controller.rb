@@ -11,7 +11,7 @@ class SlackController < ApplicationController
   end
 
   def touhid
-    render json: {"type":"mrkdwn","text":"*Test Test Test*\n_2_"}
+    render json: {"channel":"C02TX2LNSQG","text":"Hello, this is a test."}
   end
 
   private
