@@ -22,7 +22,7 @@ class SlackController < ApplicationController
     if computed_signature != slack_signature
       render nothing: true, status: :unauthorized
     else
-      @request = params.require(:slack).permit(:challenge)
+      render plain: params.require(:slack).permit(:challenge)[:challenge]
     end
   end
 end
