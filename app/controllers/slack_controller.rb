@@ -11,9 +11,10 @@ class SlackController < ApplicationController
   end
 
   def touhid
+    render nothing: true, status: :success
     response_url = request.params[:response_url]
 
-    HTTP.post(response_url, :json => {"type":"mrkdwn","text":"Hi @Touhidul Islam"})
+    HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi @Touhidul Islam"})
   end
 
   private
