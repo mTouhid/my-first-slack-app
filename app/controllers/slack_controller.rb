@@ -5,7 +5,7 @@ class SlackController < ApplicationController
     slack_signing_secret = ENV["MY_SLACK_SIGNING_SECRET"]
     @challenge = params.require(:slack).permit(:challenge)
     timestamp = request.headers['X-Slack-Request-Timestamp']
-    request_body = URI.encode_www_form(request.params)
+    request_body = URI.encode_www_form(request.params[:slack])
     sig_basestring = "v0:#{@timestamp}:#{request_body}"
     digest = OpenSSL::Digest.new('sha256')
     hmac_hexdigest = OpenSSL::HMAC.hexdigest(digest, slack_signing_secret, request_body)
