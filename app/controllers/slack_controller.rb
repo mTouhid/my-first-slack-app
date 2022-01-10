@@ -11,8 +11,9 @@ class SlackController < ApplicationController
   end
 
   def touhid
-    puts request.params
-    send_message
+    response_url = request.params[:response_url]
+
+    HTTP.post(response_url, :json => {"type":"mrkdwn","text":"Hi @Touhidul Islam"})
   end
 
   private
