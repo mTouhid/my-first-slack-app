@@ -11,7 +11,7 @@ class SlackController < ApplicationController
   end
 
   def touhid
-    render json: {"channel":"C02TX2LNSQG","text":"Hello, this is a test."}
+    puts request.params
     send_message
   end
 
