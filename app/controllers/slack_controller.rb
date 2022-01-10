@@ -10,6 +10,10 @@ class SlackController < ApplicationController
     send_message
   end
 
+  def touhid
+    render json: {"type":"mrkdwn","text":"*Test Test Test*\n_2_"}
+  end
+
   private
 
   def send_message
