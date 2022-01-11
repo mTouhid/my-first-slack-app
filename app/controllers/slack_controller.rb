@@ -6,14 +6,17 @@ class SlackController < ApplicationController
   before_action :verify_slack_signature
 
   def events
-    render plain: params.require(:slack).permit(:challenge)[:challenge]
-    user = params[:slack][:event][:user]
-    HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi <@#{user}>"})
+    if params[:slack][:type] == "url_verification"
+      render plain: params.require(:slack).permit(:challenge)[:challenge]
+    elsif params[:slack][:type] == "event_callback" && params[:slack][:event][:type] == "app_mention"
+      user = params[:slack][:event][:user]
+      HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi <@#{user}>"})
+    end
   end
 
   def touhid
-    response = HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi @Touhidul Islam"})
-    render plain: response
+    render plain: "Command received!"
+    HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi @Touhidul Islam"})
   end
 
   private
