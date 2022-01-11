@@ -13,7 +13,8 @@ class SlackController < ApplicationController
       HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi <@#{user}>"})
     elsif params[:slack][:type] == "event_callback" && params[:slack][:event][:type] == "member_joined_channel"
       user = params[:slack][:event][:user]
-      HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi <@#{user}>, welcome to this channel."})
+      channel = params[:slack][:event][:channel]
+      HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi <@#{user}>, welcome to <@#{channel}>."})
     end
   end
 
