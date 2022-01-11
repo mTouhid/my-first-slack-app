@@ -7,7 +7,8 @@ class SlackController < ApplicationController
 
   def events
     render plain: params.require(:slack).permit(:challenge)[:challenge]
-    send_message
+    user = params.require(:slack).permit(:event)[:event][:user]
+    HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi <@#{user}>"})
   end
 
   def touhid
