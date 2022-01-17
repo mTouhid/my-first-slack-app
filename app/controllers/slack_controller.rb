@@ -3,7 +3,7 @@ require 'json'
 
 class SlackController < ApplicationController
 
-  # before_action :verify_slack_signature
+  before_action :verify_slack_signature
 
   def events
     if params[:slack][:type] == "url_verification"
@@ -12,7 +12,12 @@ class SlackController < ApplicationController
       user = params[:slack][:event][:user]
       channel = params[:slack][:event][:channel]
       if params[:slack][:event][:text].include? "register"
-        HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":channel,"text":"Hi <@#{user}>, you are registered."})
+        team_member = TeamMember.new(user: params.require(:slack).require(:event).(:user))
+        if team_member.save
+          HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":channel,"text":"Hi <@#{user}>, you are registered."})
+        else
+          HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":channel,"text":"Hi <@#{user}>, Something went wrong."})
+        end
       else
         HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":channel,"text":"Hi <@#{user}>"})
       end
