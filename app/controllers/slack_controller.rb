@@ -10,12 +10,16 @@ class SlackController < ApplicationController
       render plain: params.require(:slack).permit(:challenge)[:challenge]
     elsif params[:slack][:type] == "event_callback" && params[:slack][:event][:type] == "app_mention"
       user = params[:slack][:event][:user]
-      HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi <@#{user}>, you are registered."}) if params[:slack][:event][:text].include? "register"
-      HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi <@#{user}>"})
+      channel = params[:slack][:event][:channel]
+      if params[:slack][:event][:text].include? "register"
+        HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":channel,"text":"Hi <@#{user}>, you are registered."})
+      else
+        HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":channel,"text":"Hi <@#{user}>"})
+      end
     elsif params[:slack][:type] == "event_callback" && params[:slack][:event][:type] == "member_joined_channel"
       user = params[:slack][:event][:user]
       channel = params[:slack][:event][:channel]
-      HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi <@#{user}>, welcome to <@#{channel}>."})
+      HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":channel,"text":"Hi <@#{user}>, welcome to <@#{channel}>."})
     end
   end
 
