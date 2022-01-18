@@ -19,8 +19,8 @@ class SlackController < ApplicationController
           HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":channel,"text":"Hi <@#{user}>, Something went wrong."})
         end
       elsif params[:slack][:event][:text].include? "select"
-        selected_user = TeamMember.order(Arel.sql('RANDOM()')).first.user
-        HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":channel,"text":"Hi <@#{selected_user.user}>, you have been selected."})
+        selected_user = TeamMember.order(Arel.sql('RANDOM()')).first[:user]
+        HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":channel,"text":"Hi <@#{selected_user}>, you have been selected."})
       else
         HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":channel,"text":"Hi <@#{user}>, I am not sure."})
       end
