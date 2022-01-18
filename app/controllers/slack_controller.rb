@@ -12,7 +12,7 @@ class SlackController < ApplicationController
       user = params[:slack][:event][:user]
       channel = params[:slack][:event][:channel]
       if params[:slack][:event][:text].include? "register"
-        team_member = TeamMember.new(user: params.require(:slack).require(:event).(:user))
+        team_member = TeamMember.new(user: params.require(:slack).require(:event).permit(:user))
         if team_member.save
           HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":channel,"text":"Hi <@#{user}>, you are registered."})
         else
