@@ -32,7 +32,7 @@ class SlackController < ApplicationController
   end
 
   def touhid
-    render plain: "Command received!"
+    render plain: modal
     HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi @Touhidul Islam"})
   end
 
@@ -40,6 +40,74 @@ class SlackController < ApplicationController
 
   def send_message
     HTTP.post(ENV['MY_SLACK_WEBHOOK_URL'], :json => {"type":"mrkdwn","text":"*Test Test Test*\n_2_"})
+  end
+
+  def modal
+    [
+      {
+        "type": "modal",
+        "submit": {
+          "type": "plain_text",
+          "text": "Submit",
+          "emoji": true
+        },
+        "close": {
+          "type": "plain_text",
+          "text": "Cancel",
+          "emoji": true
+        },
+        "title": {
+          "type": "plain_text",
+          "text": "Randomly select a host",
+          "emoji": true
+        },
+        "blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "*Hi <fakelink.toUser.com|@David>!* Please provide some more details:"
+            }
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": ":clipboard: *Type of ceremony*\nChoose a ceremony from this list"
+            },
+            "accessory": {
+              "type": "static_select",
+              "placeholder": {
+                "type": "plain_text",
+                "text": "Choose list",
+                "emoji": true
+              },
+              "options": [
+                {
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Stand up",
+                    "emoji": true
+                  },
+                  "value": "value-0"
+                },
+                {
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Sprint retrospective",
+                    "emoji": true
+                  },
+                  "value": "value-1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ].to_json
   end
 
 end
