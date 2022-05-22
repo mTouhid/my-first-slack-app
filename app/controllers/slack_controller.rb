@@ -35,7 +35,8 @@ class SlackController < ApplicationController
     render plain: "Message received"
     trigger_id = params[:trigger_id]
     p trigger_id
-    HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/views.open", :json => {"channel":"C02TX2LNSQG","trigger_id":trigger_id,"view":modal})
+    response = HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/views.open", :json => {"channel":"C02TX2LNSQG","trigger_id":trigger_id,"view":modal})
+    p response
     HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi @Touhidul Islam"})
   end
 
@@ -46,7 +47,6 @@ class SlackController < ApplicationController
   end
 
   def modal
-    [
       {
         "type": "modal",
         "submit": {
@@ -109,8 +109,7 @@ class SlackController < ApplicationController
             }
           }
         ]
-      }
-    ].to_json
+      }.to_json
   end
 
 end
