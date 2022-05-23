@@ -34,8 +34,9 @@ class SlackController < ApplicationController
   def touhid
     render plain: "Message received"
     trigger_id = params[:trigger_id]
+    user = params[:user_id]
     p trigger_id
-    response = HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/views.open", :json => {"channel":"C02TX2LNSQG","trigger_id":trigger_id,"view":modal})
+    response = HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/views.open", :json => {"channel":"C02TX2LNSQG","trigger_id":trigger_id,"view":modal(user)})
     p response
     HTTP.auth("Bearer #{ENV['MY_OAUTH_TOKEN']}").post("https://slack.com/api/chat.postMessage", :json => {"channel":"C02TX2LNSQG","text":"Hi @Touhidul Islam"})
   end
@@ -46,7 +47,7 @@ class SlackController < ApplicationController
     HTTP.post(ENV['MY_SLACK_WEBHOOK_URL'], :json => {"type":"mrkdwn","text":"*Test Test Test*\n_2_"})
   end
 
-  def modal
+  def modal(user)
       {
         "type": "modal",
         "submit": {
@@ -69,7 +70,7 @@ class SlackController < ApplicationController
             "type": "section",
             "text": {
               "type": "mrkdwn",
-              "text": "*Hi <fakelink.toUser.com|@David>!* Please provide some more details:"
+              "text": "*Hi <@#{user}>!* Please provide some more details:"
             }
           },
           {
